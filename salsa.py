@@ -116,10 +116,7 @@ class XSalsa20(Salsa20):
 
 		# Derive k1:
 		hsalsa = HSalsa20(self._rounds)
-		k_one = hsalsa(bytearray(16), key)
+		k_one = hsalsa(nonce[:16], key)
 
-		# Derive k2:
-		k_two = hsalsa(nonce[:16], k_one)
-
-		return super().__call__(nonce[16:], counter, k_two)
+		return super().__call__(nonce[16:], counter, k_one)
 

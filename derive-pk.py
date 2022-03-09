@@ -32,7 +32,7 @@ P = [pari.Mod(9, 2**255-19), pari.sqrt(pari.Mod(39420360, 2**255-19))]
 
 # Open file with SK
 with open(sys.argv[1], "rb") as f:
-    sk_bytes = f.read()
+	sk_bytes = f.read()
 
 # Convert and clamp SK
 sk = int.from_bytes( sk_bytes, "little" )

@@ -6,7 +6,7 @@ import hashlib
 def hexdump(data):
 	"""Convert byte array to hex string"""
 
-	return ' '.join(["{:02X}".format(v) for v in b])
+	return ' '.join(["{:02X}".format(v) for v in data])
 
 def run_test(alg, tname, tparam, expected):
 	print('Test case {}: '.format(tname), end='')
@@ -81,9 +81,14 @@ xsalsa = XSalsa20()
 
 # Test 6: Chapter 10
 tvector.clear()
+
+tvector["nonce"] = bytearray(16)
+tvector["key"] = bytearray.fromhex("4A5D9D5BA4CE2DE1728E3BF480350F25E07E21C947D19E3376F09B3C1E161742")
+k1 = hsalsa(**tvector)
+tvector.clear()
 tvector["nonce"] = bytearray.fromhex("69696ee955b62b73cd62bda875fc73d68219e0036b7a0b37")
 tvector["counter"] = 0
-tvector["key"] = bytearray.fromhex("4A5D9D5BA4CE2DE1728E3BF480350F25E07E21C947D19E3376F09B3C1E161742")
+tvector["key"] = k1
 expected = bytearray.fromhex("eea6a7251c1e72916d11c2cb214d3c252539121d8e234e652d651fa4c8cff880309e645a74e9e0a60d8243acd9177ab51a1beb8d5a2f5d700c093c5e55855796")
 run_test(xsalsa, '6 - Chaper 10', tvector, expected)
 
