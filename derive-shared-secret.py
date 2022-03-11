@@ -3,6 +3,7 @@
 import sys
 import cypari2
 from cypari2.convert import gen_to_integer, integer_to_gen
+from salsa import HSalsa20
 
 def hexdump(b):
 	"""Convert byte array to hex string"""
@@ -48,10 +49,19 @@ pari = cypari2.Pari()
 
 # Read and convert PK
 other_pk = int.from_bytes( other_pk_bytes, "little" )
-shared_p = curve25519_pk_mult(pari, my_sk, other_pk)
 
-shared_i = gen_to_integer(pari.lift(shared_p[0]))
-shared_sk = shared_i.to_bytes(32, byteorder='little')
+# Calculate Diffie-Hellman shared key
+dh_p = curve25519_pk_mult(pari, my_sk, other_pk)
+dh_i = gen_to_integer(pari.lift(dh_p[0]))
+dhkey = dh_i.to_bytes(32, byteorder='little')
 
-# Print PK as hex dump
-print(hexdump(shared_sk))
+# Build input of salsa
+kdfinput = {}
+kdfinput["nonce"] = bytearray(16)
+kdfinput["key"] = dhkey
+
+hsalsa = HSalsa20()
+k = hsalsa(**kdfinput)
+
+# Print shared key as hex dump
+print(hexdump(k))
