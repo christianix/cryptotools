@@ -35,4 +35,4 @@ xsalsa = XSalsa20()
 ks = xsalsa(**kdfinput)
 plain = bytes(k ^ c for (k, c) in zip(ks, cipher))
 
-print("Plain: {}".format(hexdump(plain)))
+print(hexdump(plain))
